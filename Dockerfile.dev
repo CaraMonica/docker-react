@@ -1,0 +1,15 @@
+FROM node:16-alpine
+
+WORKDIR /app
+
+COPY package.json .
+RUN npm install
+# Bookmarks the node_modules folder https://stackoverflow.com/questions/67087735/eacces-permission-denied-mkdir-usr-app-node-modules-cache-how-can-i-creat
+RUN mkdir node_modules/.cache && chmod -R 777 node_modules/.cache
+
+# Could delete this as docker compose volume line /app/node_modules does this
+# But what if you wanted to not use docker compose in the future? Left in as a ref anyway
+COPY . .
+
+
+CMD ["npm", "run", "start"]
