@@ -4,6 +4,7 @@ on: pull_request
 jobs:
   build:
     runs-on: ubuntu-latest
+    name: checks
     steps:
       - uses: actions/checkout@v3
       - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
