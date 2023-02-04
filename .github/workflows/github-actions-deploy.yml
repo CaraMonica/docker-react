@@ -1,6 +1,9 @@
 name: Deploy Frontend
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+on:
+ push:
+      branches:
+        - master
 
 jobs:
   build:
@@ -11,20 +14,19 @@ jobs:
       - run: docker build -t caramonica/docker-react -f Dockerfile.dev .
       - run: docker run -e CI=true caramonica/docker-react npm test
 
-      # - name: Generate deployment package
-      #   run: zip -r deploy.zip . -x '*.git*'
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x '*.git*'
 
-      # - name: Deploy to EB
-      #   uses: einaregilsson/beanstalk-deploy@v18
-      #   with:
-      #     aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
-      #     aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+      - name: Deploy to EB
+        uses: caramonica/beanstalk-deploy@v18
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
 
-      #     # Need to update the below to match AWS EBS environment
-      #     application_name: docker-gh
-      #     environment_name: Dockergh-env
-      #     existing_bucket_name: elasticbeanstalk-us-east-1-923445559289
-      #     region: us-east-1
+          application_name: docker-react
+          environment_name: Dockerreact-env
+          existing_bucket_name: elasticbeanstalk-eu-west-2-102536932582
+          region: eu-west-2
 
-      #     version_label: ${{ github.sha }}
-      #     deployment_package: deploy.zip
+          version_label: ${{ github.sha }}
+          deployment_package: deploy.zip
